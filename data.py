@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pandas import DataFrame as df
 import statsmodels
 import scipy
 import matplotlib.pyplot as plt
@@ -20,8 +21,12 @@ list150 = [150,150,150,150,150,150,150,150,150,150]
 ####################################################################################
 # BW 1.6 MHz SF 10
 
-BW1600SF10PacketNumber20 = [121.5,121,122,122,125.5,122.5,123.5,122.5,121,122.6]
-BW16SF10Pn20mean = np.mean(BW1600SF10PacketNumber20)
+BW16SF10 = pd.DataFrame(np.array([121.5,121,122,122,125.5,122.5,123.5,122.5,121,122.6],[123,122.5,123.5,122,123,123.5,123,122,122,123],[124,124,123,125,121,123,122,121,121,121],
+                    [121,122,121,123,121.5,123,124,123,124,123],[123,123.5,123,124,123,121.8,123,123,121.5,123],[123,122,123,122,123,122,123,122,123,123],[122,123,122,122,122,122,122,122,121,123],
+                    columns = ['20','40','60','80','100','125','150']))
+
+BW1600SF10PacketNumber20 = pd.DataFrame[121.5,121,122,122,125.5,122.5,123.5,122.5,121,122.6]
+
 
 BW1600SF10PacketNumber40 = [123,122.5,123.5,122,123,123.5,123,122,122,123]
 BW16SF10Pn40mean = np.mean(BW1600SF10PacketNumber40)
@@ -196,5 +201,5 @@ plt.plot(listline,[100,100,100,100,100,100,100],'black',label='ground truth') # 
 
 plt.legend()
 
-
+# token is  812d585bd1847cb7ec37297804811085b608ec48
 # suggested setting is BW 1.6 MHz and SF 6 from the above plots
