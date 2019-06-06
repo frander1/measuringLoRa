@@ -56,7 +56,7 @@ BW_16_SF_6_std.columns = ['packets','std']
 #######################################################
 # MEAN
 plt.figure(num=1,figsize=(10,7),dpi=150)
-#BW_16_SF_10_means_plot = plt.plot(BW_16_SF_10_means,'-ro',label='BW: 1.6 MHz, SF: 10')
+BW_16_SF_10_means_plot = plt.plot(BW_16_SF_10_means,'-ro',label='BW: 1.6 MHz, SF: 10')
 BW_16_SF_5_means_plot = plt.plot(BW_16_SF_5_means,'-bo',label='BW: 1.6 MHz, SF: 5')
 #BW_400_SF_10_means_plot = plt.plot(BW_400_SF_10_means,'-yo',label='BW: 400 Khz, SF: 10')
 BW_400_SF_5_means_plot = plt.plot(BW_400_SF_5_means,'-go',label='BW: 400 Khz, SF: 5')
@@ -77,3 +77,9 @@ BW_16_SF_5_std_plot = plt.plot(BW_16_SF_5_std,'-bo',label='BW: 1.6 MHz, SF: 5')
 BW_16_SF_6_std_plot = plt.plot(BW_16_SF_6_std,'-mo',label='BW: 1.6 MHz, SF: 6')
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 plt.show()
+
+
+# Hvilke BW og SF er bedst til hvilke distancer?
+# 0-500 , 500 - 1000, 1000-1500, 1500-2000, 2000-2500, 2500+
+# sudden burst where it would get connection / not get connection? why?
+# section om auto tuning hvor den justerer parametre selv i forhold til hvad der er bedst
