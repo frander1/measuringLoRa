@@ -1,11 +1,17 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame as df
-import statsmodels
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+import matplotlib.patches as mpatches
+#import statsmodels
 import scipy
 from scipy.stats import sem, t
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
+
+#groundtruth was 25, 100, 1133 ,1690, 2607
+truth = [25, 100, 1133 ,1690, 2607]
 
 # IF BW 1.6 WORKS - USE THAT since it provides higher datarate and higher precision
 # 10 per sf per datarate 100 packets
@@ -114,3 +120,81 @@ BW_4_2500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None
                                                   [2574,2633,None,None,None,None,None,None,None,None],[2517,2511,2498,2517,2518,2523,2511,2521,2502,2507]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 #SF 8 was 1(2) out of 150
 #SF 9 was 2 / 150 SF 10 was at most 10% try succes 10/ 100
+
+
+BW_16_25mean = df.mean(BW_16_25m)
+BW_16_100mean = df.mean(BW_16_100m)
+BW_16_500mean = df.mean(BW_16_500m)
+BW_16_1000mean = df.mean(BW_16_1000m)
+BW_16_1500mean = df.mean(BW_16_1500m)
+BW_16_2500mean = df.mean(BW_16_2500m)
+
+BW_8_25mean = df.mean(BW_8_25m)
+BW_8_100mean = df.mean(BW_8_100m)
+BW_8_500mean = df.mean(BW_8_500m)
+BW_8_1000mean = df.mean(BW_8_1000m)
+BW_8_1500mean = df.mean(BW_8_1500m)
+BW_8_2500mean = df.mean(BW_8_2500m)
+
+BW_4_25mean = df.mean(BW_4_25m)
+BW_4_100mean = df.mean(BW_4_100m)
+BW_4_500mean = df.mean(BW_4_500m)
+BW_4_1000mean = df.mean(BW_4_1000m)
+BW_4_1500mean = df.mean(BW_4_1500m)
+BW_4_2500mean = df.mean(BW_4_2500m)
+
+# ground truth and setup for plots
+SF,BW = np.meshgrid([5,6,7,8,9,10],[400,800,1600])
+SF1,BW1 = [5,6,7,8,9,10],[400,800,1600]
+groundtruth = np.array([[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
+
+norm2 = plt.Normalize(groundtruth.min(),groundtruth.max())
+colors2 = cm.viridis(norm2(groundtruth))
+rcount2, ccount2, _  = colors2.shape
+
+# 25 meter
+m25mean_err = np.array([(BW_4_25mean-25),(BW_8_25mean-25),(BW_16_25mean-25)]) #subtracting 25 from mean in order to move
+                                                                              #data around 0, such that it will be mean                                                                              #error
+norm = plt.Normalize(m25mean_err.min(), m25mean_err.max())
+colors = cm.viridis(norm(m25mean_err))
+rcount, ccount, _ = colors.shape
+
+# 100 meter
+
+# 500 meter
+
+# 1000 meter
+
+# 1500 meter
+
+# 2500 meter
+
+#fig 1
+
+fig1 = plt.figure(num=2,figsize=(10,7),dpi=200)
+ax1 = Axes3D(fig1)
+
+surf0 = ax1.plot_surface(BW,SF,groundtruth,rcount=rcount2, ccount=ccount2, facecolors=colors2, shade=False)
+surf1 = ax1.plot_surface(BW,SF,m25mean_err,rcount=rcount, ccount=ccount, facecolors=colors, shade=False)
+for a,b,c in zip(m25mean_err,BW,SF): # LEGIT GENIUS PLOT
+    for i,j,k in zip(a,b,c):
+        ax1.plot([j,j],[k,k],[0,i],'--r')
+ax1.scatter(BW,SF,m25mean_err,s=25,marker='s',color='b',depthshade=False)
+
+surf0.set_facecolor((0,0,0,0))
+surf0.set_edgecolor('green')
+surf0.set_linestyle('-')
+surf1.set_facecolor((0,0,0,0))
+surf1.set_edgecolor((0,0,0,1))
+surf1.set_linestyle('-')
+surf1.set_linewidth(1)
+ax1.set_xlabel('Bandwidth (KHz)')
+ax1.set_ylabel('Spreading Factor')
+ax1.set_zlabel('Error (m) ')
+ax1.set_xticks([400,800,1600])
+ax1.view_init(azim=-135)
+plt.title('25m Mean Error')
+green_patch = mpatches.Patch(color='green', label='No error / Ground Truth')
+blue_patch = mpatches.Patch(color='blue', label='Mean Error ')
+plt.legend(handles=[green_patch, blue_patch])
+plt.show()
