@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 #import seaborn as sns
 
 #groundtruth was 25, 100, 1133 ,1690, 2607
-truth = [25, 100, 1133 ,1690, 2607]
+truth = [25, 100, 510.5, 1133.7 ,1690, 2607]
 
 # IF BW 1.6 WORKS - USE THAT since it provides higher datarate and higher precision
 # 10 per sf per datarate 100 packets
@@ -45,7 +45,7 @@ BW_4_100m  = pd.DataFrame(np.transpose(np.array([[105,106,103.3,105,109,109,107,
 # maybe 1 / 80 at SF10, (few 0 measured bc packet loss 100%) could not at around 300+ tries get more than 5 measurements
 
 ### 500m
-BW_16_500m = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,7115,516.3,517.4,512.7,55107,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2],
+BW_16_500m = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,7115, 55107,516.3,517.4,512.7,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2], # should 55107 and 7115 from sf 5
                                                  [511.5,515,512,512,512,512,511.9,514,511,512],[518,517,517.5,518,517,516,516,517,517,517],
                                                  [521,521,521,521,522,521,523,522,521,523.5],[533,533,533,531,533,533,532,531,531,532]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 # sf 5 60-70% tries not coming through and only 5% packet return. SF 6 bit better with 40 % tries drop and 20 % packet return
@@ -93,11 +93,11 @@ BW_16_1500m = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None
 
 BW_8_1500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None,None,None,None,None],[None,None,None,None,None,None,None,None,None,None],
                                                   [1690,1688,1688,1689,1695,1697,1693,1692,1691,1690],[1685,1683,1689,1687,1691,1688,1693,1696,1687,1688],
-                                                  [1668,1679,1664,1669,1667,1661,1642,1651,1675,1656],[1646,1648,1645,1648,1647,1645,1645,1648,1645,1646]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+                                                  [1668,1679,1664,1669,1667,1661,65535,1642,1651,1675,1656],[1646,1648,1645,1648,1647,1645,1645,1648,1645,1646]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 # sf 7 5-10 % try succes, sf 8 was 90 %
-# 65535 was taken out of sf 9
+# 65535 should be remove from  sf 9
 
-BW_4_1500m  = pd.DataFrame(np.transpose(np.array([[1682,1,1679,None,None,None,None,None,None,None],[1676,1684,1682,1682,1686,1689,1677,1720,1667,1645],
+BW_4_1500m  = pd.DataFrame(np.transpose(np.array([[1682,1,1679,None,None,None,None,None,None,None],[1676,1684,1682,1682,1686,1689,1677,1720,1667,1645], # should remove 1 from sf 5
                                                   [1685,1681,1680,1681,1679,1684,1672,1685,1677,1682],[1665,1669,1669,1664,1677,1672,1680,1678,1670,1679],
                                                   [1645,1645,1643,1643,1644,1637,1643,1652,1649,1639],[1580,1583,1586,1596,1591,1587,1588,1584,1584,1585]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 #SF 5 3 (2 proper) results in 150 tries. SF 6 271 tries total
@@ -116,12 +116,12 @@ BW_8_2500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None
 # sF 9 was 2 / 150, sf 10 10/300+
 
 BW_4_2500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None,None,None,None,None],[None,None,None,None,None,None,None,None,None,None],
-                                                  [None,None,None,None,None,None,None,None,None,None],[2576,1,None,None,None,None,None,None,None,None],
+                                                  [None,None,None,None,None,None,None,None,None,None],[2576,1,None,None,None,None,None,None,None,None], # should remove 1 from sf 8
                                                   [2574,2633,None,None,None,None,None,None,None,None],[2517,2511,2498,2517,2518,2523,2511,2521,2502,2507]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 #SF 8 was 1(2) out of 150
 #SF 9 was 2 / 150 SF 10 was at most 10% try succes 10/ 100
 
-
+# MEANS #########################################
 BW_16_25mean = df.mean(BW_16_25m)
 BW_16_100mean = df.mean(BW_16_100m)
 BW_16_500mean = df.mean(BW_16_500m)
@@ -142,40 +142,48 @@ BW_4_500mean = df.mean(BW_4_500m)
 BW_4_1000mean = df.mean(BW_4_1000m)
 BW_4_1500mean = df.mean(BW_4_1500m)
 BW_4_2500mean = df.mean(BW_4_2500m)
+# Standard deviations ############################
+BW_16_25std = df.std(BW_16_25m)
+BW_16_100std = df.std(BW_16_100m)
+BW_16_500std = df.std(BW_16_500m)
+BW_16_1000std = df.std(BW_16_1000m)
+BW_16_1500std = df.std(BW_16_1500m)
+BW_16_2500std = df.std(BW_16_2500m)
+
+BW_8_25std = df.std(BW_8_25m)
+BW_8_100std = df.std(BW_8_100m)
+BW_8_500std = df.std(BW_8_500m)
+BW_8_1000std = df.std(BW_8_1000m)
+BW_8_1500std = df.std(BW_8_1500m)
+BW_8_2500std = df.std(BW_8_2500m)
+
+BW_4_25std = df.std(BW_4_25m)
+BW_4_100std = df.std(BW_4_100m)
+BW_4_500std = df.std(BW_4_500m)
+BW_4_1000std = df.std(BW_4_1000m)
+BW_4_1500std = df.std(BW_4_1500m)
+####################################################
+
 
 # ground truth and setup for plots
 SF,BW = np.meshgrid([5,6,7,8,9,10],[400,800,1600])
-SF1,BW1 = [5,6,7,8,9,10],[400,800,1600]
+
 groundtruth = np.array([[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
 
 norm2 = plt.Normalize(groundtruth.min(),groundtruth.max())
 colors2 = cm.viridis(norm2(groundtruth))
 rcount2, ccount2, _  = colors2.shape
 
-# 25 meter
+#fig 1 25 meter
+
 m25mean_err = np.array([(BW_4_25mean-25),(BW_8_25mean-25),(BW_16_25mean-25)]) #subtracting 25 from mean in order to move
-                                                                              #data around 0, such that it will be mean                                                                              #error
-norm = plt.Normalize(m25mean_err.min(), m25mean_err.max())
-colors = cm.viridis(norm(m25mean_err))
-rcount, ccount, _ = colors.shape
-
-# 100 meter
-
-# 500 meter
-
-# 1000 meter
-
-# 1500 meter
-
-# 2500 meter
-
-#fig 1
-
-fig1 = plt.figure(num=2,figsize=(10,7),dpi=200)
+                                                                              #data around 0, such that it will be mean
+                                                                              # error
+fig1 = plt.figure(num=1,figsize=(10,7),dpi=200)
 ax1 = Axes3D(fig1)
 
-surf0 = ax1.plot_surface(BW,SF,groundtruth,rcount=rcount2, ccount=ccount2, facecolors=colors2, shade=False)
-surf1 = ax1.plot_surface(BW,SF,m25mean_err,rcount=rcount, ccount=ccount, facecolors=colors, shade=False)
+surf0 = ax1.plot_surface(BW,SF,groundtruth)
+surf1 = ax1.plot_surface(BW,SF,m25mean_err)
 for a,b,c in zip(m25mean_err,BW,SF): # LEGIT GENIUS PLOT
     for i,j,k in zip(a,b,c):
         ax1.plot([j,j],[k,k],[0,i],'--r')
@@ -185,7 +193,7 @@ surf0.set_facecolor((0,0,0,0))
 surf0.set_edgecolor('green')
 surf0.set_linestyle('-')
 surf1.set_facecolor((0,0,0,0))
-surf1.set_edgecolor((0,0,0,1))
+surf1.set_edgecolor('black')
 surf1.set_linestyle('-')
 surf1.set_linewidth(1)
 ax1.set_xlabel('Bandwidth (KHz)')
@@ -197,4 +205,222 @@ plt.title('25m Mean Error')
 green_patch = mpatches.Patch(color='green', label='No error / Ground Truth')
 blue_patch = mpatches.Patch(color='blue', label='Mean Error ')
 plt.legend(handles=[green_patch, blue_patch])
+#plt.show()
+
+# fig 2 100 meter #############################################################
+
+m100mean_err = np.array([(BW_4_100mean-100),(BW_8_100mean-100),(BW_16_100mean-100)]) #subtracting 100 from mean in order to move
+                                                                              #data around 0, such that it will be mean
+                                                                              #error
+
+fig2 = plt.figure(num=2,figsize=(10,7),dpi=200)
+ax2 = Axes3D(fig2)
+
+surf2 = ax2.plot_surface(BW,SF,groundtruth)
+surf3 = ax2.plot_surface(BW,SF,m100mean_err)
+for a,b,c in zip(m100mean_err,BW,SF): # LEGIT GENIUS PLOT
+    for i,j,k in zip(a,b,c):
+        ax2.plot([j,j],[k,k],[0,i],'--r')
+ax2.scatter(BW,SF,m100mean_err,s=25,marker='s',color='b',depthshade=False)
+
+surf2.set_facecolor((0,0,0,0))
+surf2.set_edgecolor('green')
+surf2.set_linestyle('-')
+surf3.set_facecolor((0,0,0,0))
+surf3.set_edgecolor('black')
+surf3.set_linestyle('-')
+surf3.set_linewidth(1)
+ax2.set_xlabel('Bandwidth (KHz)')
+ax2.set_ylabel('Spreading Factor')
+ax2.set_zlabel('Error (m) ')
+ax2.set_xticks([400,800,1600])
+ax2.view_init(azim=-135)
+plt.title('100m Mean Error')
+plt.legend(handles=[green_patch, blue_patch])
+# plt.show()
+
+# fig 3 500 meter ##################################################################
+m500mean_err = np.array([(BW_4_500mean-510.5),(BW_8_500mean-510.5),(BW_16_500mean-510.5)]) #subtracting 510 from mean in order to move
+                                                                              #data around 0, such that it will be mean
+                                                                              #error
+
+fig3 = plt.figure(num=3,figsize=(10,7),dpi=200)
+ax3 = Axes3D(fig3)
+
+surf4 = ax3.plot_surface(BW,SF,groundtruth)
+surf5 = ax3.plot_surface(BW,SF,m500mean_err)
+for a,b,c in zip(m500mean_err,BW,SF): # LEGIT GENIUS PLOT
+    for i,j,k in zip(a,b,c):
+        ax3.plot([j,j],[k,k],[0,i],'--r')
+ax3.scatter(BW,SF,m500mean_err,s=25,marker='s',color='b',depthshade=False)
+
+surf4.set_facecolor((0,0,0,0))
+surf4.set_edgecolor('green')
+surf4.set_linestyle('-')
+surf5.set_facecolor((0,0,0,0))
+surf5.set_edgecolor('black')
+surf5.set_linestyle('-')
+surf5.set_linewidth(1)
+ax3.set_xlabel('Bandwidth (KHz)')
+ax3.set_ylabel('Spreading Factor')
+ax3.set_zlabel('Error (m) ')
+ax3.set_xticks([400,800,1600])
+ax3.view_init(azim=-135)
+plt.title('510.5 m Mean Error')
+plt.legend(handles=[green_patch, blue_patch])
 plt.show()
+
+# fig 4 1000m
+m1000mean_err = np.array([(BW_4_1000mean-1133.7),(BW_8_1000mean-1133.7),(BW_16_1000mean-1133.7)]) #subtracting 510 from mean in order to move
+                                                                              #data around 0, such that it will be mean
+                                                                              #error
+fig4 = plt.figure(num=4,figsize=(10,7),dpi=200)
+ax4 = Axes3D(fig4)
+
+surf6 = ax4.plot_surface(BW,SF,groundtruth)
+surf7 = ax4.plot_surface(BW,SF,m1000mean_err)
+
+for a,b,c in zip(m1000mean_err,BW,SF): # LEGIT GENIUS PLOT
+    for i,j,k in zip(a,b,c):
+        ax4.plot([j,j],[k,k],[0,i],'--r')
+ax4.scatter(BW,SF,m1000mean_err,s=25,marker='s',color='b',depthshade=False)
+
+surf6.set_facecolor((0,0,0,0))
+surf6.set_edgecolor('green')
+surf6.set_linestyle('-')
+surf7.set_facecolor((0,0,0,0))
+surf7.set_edgecolor('black')
+surf7.set_linestyle('-')
+surf7.set_linewidth(1)
+ax4.set_xlabel('Bandwidth (KHz)')
+ax4.set_ylabel('Spreading Factor')
+ax4.set_zlabel('Error (m) ')
+ax4.set_xticks([400,800,1600])
+ax4.view_init(azim=-135)
+plt.title('1133.7 m Mean Error')
+plt.legend(handles=[green_patch, blue_patch])
+plt.show()
+
+# fig 5 1500 m
+m1500mean_err = np.array([(BW_4_1500mean-1690),(BW_8_1500mean-1690),(BW_16_1500mean-1690)]) #subtracting 510 from mean in order to move
+                                                                              #data around 0, such that it will be mean
+                                                                              #error
+fig5 = plt.figure(num=5,figsize=(10,7),dpi=200)
+ax5 = Axes3D(fig5)
+
+surf8 = ax5.plot_surface(BW,SF,groundtruth)
+surf9 = ax5.plot_surface(BW,SF,m1500mean_err)
+
+for a,b,c in zip(m1500mean_err,BW,SF): # LEGIT GENIUS PLOT
+    for i,j,k in zip(a,b,c):
+        ax5.plot([j,j],[k,k],[0,i],'--r')
+ax5.scatter(BW,SF,m1500mean_err,s=25,marker='s',color='b',depthshade=False)
+
+surf8.set_facecolor((0,0,0,0))
+surf8.set_edgecolor('green')
+surf8.set_linestyle('-')
+surf9.set_facecolor((0,0,0,0))
+surf9.set_edgecolor('black')
+surf9.set_linestyle('-')
+surf9.set_linewidth(1)
+ax5.set_xlabel('Bandwidth (KHz)')
+ax5.set_ylabel('Spreading Factor')
+ax5.set_zlabel('Error (m) ')
+ax5.set_xticks([400,800,1600])
+ax5.view_init(azim=-135)
+plt.title('1690 m Mean Error')
+plt.legend(handles=[green_patch, blue_patch])
+#plt.show()
+
+# fig 6 2500 m
+
+m2500mean_err = np.array([(BW_4_2500mean-2607),(BW_8_2500mean-2607),(BW_16_2500mean-2607)]) #subtracting 510 from mean in order to move
+                                                                              #data around 0, such that it will be mean
+                                                                              #error
+fig6 = plt.figure(num=4,figsize=(10,7),dpi=200)
+ax6 = Axes3D(fig6)
+
+surf10 = ax6.plot_surface(BW,SF,groundtruth)
+surf11 = ax6.plot_surface(BW,SF,m2500mean_err)
+
+for a,b,c in zip(m2500mean_err,BW,SF): # LEGIT GENIUS PLOT
+    for i,j,k in zip(a,b,c):
+        ax6.plot([j,j],[k,k],[0,i],'--r')
+ax6.scatter(BW,SF,m2500mean_err,s=25,marker='s',color='b',depthshade=False)
+
+surf10.set_facecolor((0,0,0,0))
+surf10.set_edgecolor('green')
+surf10.set_linestyle('-')
+surf11.set_facecolor((0,0,0,0))
+surf11.set_edgecolor('black')
+surf11.set_linestyle('-')
+surf11.set_linewidth(1)
+ax6.set_xlabel('Bandwidth (KHz)')
+ax6.set_ylabel('Spreading Factor')
+ax6.set_zlabel('Error (m) ')
+ax6.set_xticks([400,800,1600])
+ax6.view_init(azim=-135)
+plt.title('2607 m Mean Error')
+plt.legend(handles=[green_patch, blue_patch])
+#plt.show()
+
+fig7 = plt.figure(num=4,figsize=(10,7),dpi=200)
+ax7 = Axes3D(fig7)
+
+surf0 = ax7.plot_surface(BW,SF,groundtruth)
+surf1 = ax7.plot_surface(BW,SF,m25mean_err)
+surf3 = ax7.plot_surface(BW,SF,m100mean_err)
+surf5 = ax7.plot_surface(BW,SF,m500mean_err)
+surf7 = ax7.plot_surface(BW,SF,m1000mean_err)
+surf9 = ax7.plot_surface(BW,SF,m1500mean_err)
+surf11 = ax7.plot_surface(BW,SF,m2500mean_err)
+
+
+surf0.set_facecolor((0,0,0,0))
+surf0.set_edgecolor('green')
+surf0.set_linestyle('-')
+
+surf1.set_facecolor((0,0,0,0))
+surf1.set_edgecolor('yellow')
+surf1.set_linestyle('-')
+surf1.set_linewidth(1)
+surf3.set_facecolor((0,0,0,0))
+surf3.set_edgecolor('magenta')
+surf3.set_linestyle('-')
+surf3.set_linewidth(1)
+surf5.set_facecolor((0,0,0,0))
+surf5.set_edgecolor('blue')
+surf5.set_linestyle('-')
+surf5.set_linewidth(1)
+surf7.set_facecolor((0,0,0,0))
+surf7.set_edgecolor('red')
+surf7.set_linestyle('-')
+surf7.set_linewidth(1)
+surf9.set_facecolor((0,0,0,0))
+surf9.set_edgecolor('orange')
+surf9.set_linestyle('-')
+surf9.set_linewidth(1)
+surf11.set_facecolor((0,0,0,0))
+surf11.set_edgecolor('black')
+surf11.set_linestyle('-')
+surf11.set_linewidth(1)
+ax7.set_xlabel('Bandwidth (KHz)')
+ax7.set_ylabel('Spreading Factor')
+ax7.set_zlabel('Error (m) ')
+ax7.set_xticks([400,800,1600])
+ax7.view_init(azim=-135)
+plt.title('All Mean Error')
+plt.legend(handles=[green_patch, blue_patch])
+plt.show()
+
+# all mean error i et plot
+
+'''
+fig1.savefig('25meanerr.pdf')
+fig2.savefig('100meanerr.pdf')
+fig3.savefig('500meanerr.pdf')
+fig4.savefig('1000meanerr.pdf')
+fig5.savefig('1500meanerr.pdf')
+fig6.savefig('2500meanerr.pdf')'''
+
+#99555778
