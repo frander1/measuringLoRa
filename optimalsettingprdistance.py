@@ -45,7 +45,7 @@ BW_4_100m  = pd.DataFrame(np.transpose(np.array([[105,106,103.3,105,109,109,107,
 # maybe 1 / 80 at SF10, (few 0 measured bc packet loss 100%) could not at around 300+ tries get more than 5 measurements
 
 ### 500m
-BW_16_500m = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,7115, 55107,516.3,517.4,512.7,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2], # should 55107 and 7115 from sf 5
+BW_16_500m = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,None, None,516.3,517.4,512.7,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2], # removed 55107 and 7115 from sf 5 since they are so far off (impossible)
                                                  [511.5,515,512,512,512,512,511.9,514,511,512],[518,517,517.5,518,517,516,516,517,517,517],
                                                  [521,521,521,521,522,521,523,522,521,523.5],[533,533,533,531,533,533,532,531,531,532]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 # sf 5 60-70% tries not coming through and only 5% packet return. SF 6 bit better with 40 % tries drop and 20 % packet return
@@ -93,11 +93,11 @@ BW_16_1500m = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None
 
 BW_8_1500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None,None,None,None,None],[None,None,None,None,None,None,None,None,None,None],
                                                   [1690,1688,1688,1689,1695,1697,1693,1692,1691,1690],[1685,1683,1689,1687,1691,1688,1693,1696,1687,1688],
-                                                  [1668,1679,1664,1669,1667,1661,65535,1642,1651,1675,1656],[1646,1648,1645,1648,1647,1645,1645,1648,1645,1646]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+                                                  [1668,1679,1664,1669,1667,1661,1642,1651,1675,1656],[1646,1648,1645,1648,1647,1645,1645,1648,1645,1646]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 # sf 7 5-10 % try succes, sf 8 was 90 %
-# 65535 should be remove from  sf 9
+# 65535 was removed from  sf 9 because it is clearly a 16 bit overflow / fail and obviously impossible
 
-BW_4_1500m  = pd.DataFrame(np.transpose(np.array([[1682,1,1679,None,None,None,None,None,None,None],[1676,1684,1682,1682,1686,1689,1677,1720,1667,1645], # should remove 1 from sf 5
+BW_4_1500m  = pd.DataFrame(np.transpose(np.array([[1682,None,1679,None,None,None,None,None,None,None],[1676,1684,1682,1682,1686,1689,1677,1720,1667,1645], #  removed 1 from sf 5 since clearly wrong
                                                   [1685,1681,1680,1681,1679,1684,1672,1685,1677,1682],[1665,1669,1669,1664,1677,1672,1680,1678,1670,1679],
                                                   [1645,1645,1643,1643,1644,1637,1643,1652,1649,1639],[1580,1583,1586,1596,1591,1587,1588,1584,1584,1585]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 #SF 5 3 (2 proper) results in 150 tries. SF 6 271 tries total
@@ -116,7 +116,7 @@ BW_8_2500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None
 # sF 9 was 2 / 150, sf 10 10/300+
 
 BW_4_2500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None,None,None,None,None],[None,None,None,None,None,None,None,None,None,None],
-                                                  [None,None,None,None,None,None,None,None,None,None],[2576,1,None,None,None,None,None,None,None,None], # should remove 1 from sf 8
+                                                  [None,None,None,None,None,None,None,None,None,None],[2576,None,None,None,None,None,None,None,None,None], #  removed 1 from sf 8 since clearly wrong
                                                   [2574,2633,None,None,None,None,None,None,None,None],[2517,2511,2498,2517,2518,2523,2511,2521,2502,2507]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 #SF 8 was 1(2) out of 150
 #SF 9 was 2 / 150 SF 10 was at most 10% try succes 10/ 100
@@ -162,6 +162,8 @@ BW_4_100std = df.std(BW_4_100m)
 BW_4_500std = df.std(BW_4_500m)
 BW_4_1000std = df.std(BW_4_1000m)
 BW_4_1500std = df.std(BW_4_1500m)
+BW_4_2500std = df.std(BW_4_2500m)
+
 ####################################################
 
 
@@ -268,7 +270,7 @@ ax3.set_xticks([400,800,1600])
 ax3.view_init(azim=-135)
 plt.title('510.5 m Mean Error')
 plt.legend(handles=[green_patch, blue_patch])
-plt.show()
+#plt.show()
 
 # fig 4 1000m
 m1000mean_err = np.array([(BW_4_1000mean-1133.7),(BW_8_1000mean-1133.7),(BW_16_1000mean-1133.7)]) #subtracting 510 from mean in order to move
@@ -299,7 +301,7 @@ ax4.set_xticks([400,800,1600])
 ax4.view_init(azim=-135)
 plt.title('1133.7 m Mean Error')
 plt.legend(handles=[green_patch, blue_patch])
-plt.show()
+#plt.show()
 
 # fig 5 1500 m
 m1500mean_err = np.array([(BW_4_1500mean-1690),(BW_8_1500mean-1690),(BW_16_1500mean-1690)]) #subtracting 510 from mean in order to move
@@ -411,7 +413,8 @@ ax7.set_xticks([400,800,1600])
 ax7.view_init(azim=-135)
 plt.title('All Mean Error')
 plt.legend(handles=[green_patch, blue_patch])
-plt.show()
+#plt.show()
+#plt.show()
 
 # all mean error i et plot
 
@@ -422,5 +425,61 @@ fig3.savefig('500meanerr.pdf')
 fig4.savefig('1000meanerr.pdf')
 fig5.savefig('1500meanerr.pdf')
 fig6.savefig('2500meanerr.pdf')'''
+# Standard deviation plot
 
-#99555778
+std25m = [BW_16_25std,BW_8_25std,BW_4_25std]
+std100m = [BW_16_100std,BW_8_100std,BW_4_100std]
+std500m = [BW_16_500std,BW_8_500std,BW_4_500std]
+std1000m = [BW_16_1000std,BW_8_1000std,BW_4_1000std]
+std1500m = [BW_16_1500std,BW_8_1500std,BW_4_1500std]
+std2500m = [BW_16_2500std,BW_8_2500std,BW_4_2500std]
+SF_set = [5,6,7,8,9,10]
+
+fig8 =  plt.figure(num=8,figsize=(10,7),dpi=200)
+plt.plot(SF_set,BW_16_25std,'-ro',label='BW 1600')
+plt.plot(SF_set,BW_8_25std,'-go',label='BW 800')
+plt.plot(SF_set,BW_4_25std,'-bo',label='BW 400')
+plt.legend()
+plt.title('25 meter')
+
+fig9 =  plt.figure(num=9,figsize=(10,7),dpi=200)
+plt.plot(SF_set,BW_16_100std,'-ro',label='BW 1600')
+plt.plot(SF_set,BW_8_100std,'-go',label='BW 800')
+plt.plot(SF_set,BW_4_100std,'-bo',label='BW 400')
+plt.legend()
+plt.title('100 meter')
+
+fig10 =  plt.figure(num=10,figsize=(10,7),dpi=200)
+plt.plot(SF_set,BW_16_500std,'-ro',label='BW 1600')
+plt.plot(SF_set,BW_8_500std,'-go',label='BW 800')
+plt.plot(SF_set,BW_4_500std,'-bo',label='BW 400')
+plt.legend()
+plt.title('500 meter')
+
+fig11 =  plt.figure(num=11,figsize=(10,7),dpi=200)
+plt.plot(SF_set,BW_16_1000std,'-ro',label='BW 1600')
+plt.plot(SF_set,BW_8_1000std,'-go',label='BW 800')
+plt.plot(SF_set,BW_4_1000std,'-bo',label='BW 400')
+plt.legend()
+plt.title('1000 meter')
+
+fig12 =  plt.figure(num=12,figsize=(10,7),dpi=200)
+plt.plot(SF_set,BW_16_1500std,'-ro',label='BW 1600')
+plt.plot(SF_set,BW_8_1500std,'-go',label='BW 800')
+plt.plot(SF_set,BW_4_1500std,'-bo',label='BW 400')
+plt.legend()
+plt.title('1500 meter')
+
+fig13 =  plt.figure(num=13,figsize=(10,7),dpi=200)
+plt.plot(SF_set,BW_16_2500std,'-ro',label='BW 1600')
+plt.plot(SF_set,BW_8_2500std,'-go',label='BW 800')
+plt.plot(SF_set,BW_4_2500std,'-bo',label='BW 400')
+plt.legend()
+plt.title('2500 meter')
+
+#fig8.show()
+#fig9.show()
+#fig10.show()
+#fig11.show()
+#fig12.show()
+#fig13.show()
