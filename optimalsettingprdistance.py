@@ -4,9 +4,9 @@ from pandas import DataFrame as df
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import matplotlib.patches as mpatches
-#import statsmodels
+import statsmodels.stats.api as sms
 import scipy
-from scipy.stats import sem, t
+import scipy.stats as st
 import matplotlib.pyplot as plt
 #import seaborn as sns
 
@@ -45,7 +45,7 @@ BW_4_100m  = pd.DataFrame(np.transpose(np.array([[105,106,103.3,105,109,109,107,
 # maybe 1 / 80 at SF10, (few 0 measured bc packet loss 100%) could not at around 300+ tries get more than 5 measurements
 
 ### 500m
-BW_16_500m = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,None, None,516.3,517.4,512.7,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2], # removed 55107 and 7115 from sf 5 since they are so far off (impossible)
+BW_16_500m = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,None,None,516.3,517.4,512.7,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2], # removed 55107 and 7115 from sf 5 since they are so far off (impossible)
                                                  [511.5,515,512,512,512,512,511.9,514,511,512],[518,517,517.5,518,517,516,516,517,517,517],
                                                  [521,521,521,521,522,521,523,522,521,523.5],[533,533,533,531,533,533,532,531,531,532]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 # sf 5 60-70% tries not coming through and only 5% packet return. SF 6 bit better with 40 % tries drop and 20 % packet return
@@ -178,7 +178,7 @@ rcount2, ccount2, _  = colors2.shape
 
 #fig 1 25 meter
 
-m25mean_err = np.array([(BW_4_25mean-25),(BW_8_25mean-25),(BW_16_25mean-25)]) #subtracting 25 from mean in order to move
+m25mean_err = np.array([(abs(BW_4_25mean-25)),(abs(BW_8_25mean-25)),(abs(BW_16_25mean-25))]) #subtracting 25 from mean in order to move
                                                                               #data around 0, such that it will be mean
                                                                               # error
 fig1 = plt.figure(num=1,figsize=(10,7),dpi=200)
@@ -200,7 +200,7 @@ surf1.set_linestyle('-')
 surf1.set_linewidth(1)
 ax1.set_xlabel('Bandwidth (KHz)')
 ax1.set_ylabel('Spreading Factor')
-ax1.set_zlabel('Error (m) ')
+ax1.set_zlabel('Absolute Error (m) ')
 ax1.set_xticks([400,800,1600])
 ax1.view_init(azim=-135)
 plt.title('25m Mean Error')
@@ -211,7 +211,7 @@ plt.legend(handles=[green_patch, blue_patch])
 
 # fig 2 100 meter #############################################################
 
-m100mean_err = np.array([(BW_4_100mean-100),(BW_8_100mean-100),(BW_16_100mean-100)]) #subtracting 100 from mean in order to move
+m100mean_err = np.array([(abs(BW_4_100mean-100)),(abs(BW_8_100mean-100)),(abs(BW_16_100mean-100))]) #subtracting 100 from mean in order to move
                                                                               #data around 0, such that it will be mean
                                                                               #error
 
@@ -234,7 +234,7 @@ surf3.set_linestyle('-')
 surf3.set_linewidth(1)
 ax2.set_xlabel('Bandwidth (KHz)')
 ax2.set_ylabel('Spreading Factor')
-ax2.set_zlabel('Error (m) ')
+ax2.set_zlabel('Absolute Error (m) ')
 ax2.set_xticks([400,800,1600])
 ax2.view_init(azim=-135)
 plt.title('100m Mean Error')
@@ -242,7 +242,7 @@ plt.legend(handles=[green_patch, blue_patch])
 # plt.show()
 
 # fig 3 500 meter ##################################################################
-m500mean_err = np.array([(BW_4_500mean-510.5),(BW_8_500mean-510.5),(BW_16_500mean-510.5)]) #subtracting 510 from mean in order to move
+m500mean_err = np.array([(abs(BW_4_500mean-510.5)),(abs(BW_8_500mean-510.5)),(abs(BW_16_500mean-510.5))]) #subtracting 510 from mean in order to move
                                                                               #data around 0, such that it will be mean
                                                                               #error
 
@@ -265,7 +265,7 @@ surf5.set_linestyle('-')
 surf5.set_linewidth(1)
 ax3.set_xlabel('Bandwidth (KHz)')
 ax3.set_ylabel('Spreading Factor')
-ax3.set_zlabel('Error (m) ')
+ax3.set_zlabel('Absolute Error (m) ')
 ax3.set_xticks([400,800,1600])
 ax3.view_init(azim=-135)
 plt.title('510.5 m Mean Error')
@@ -273,7 +273,7 @@ plt.legend(handles=[green_patch, blue_patch])
 #plt.show()
 
 # fig 4 1000m
-m1000mean_err = np.array([(BW_4_1000mean-1133.7),(BW_8_1000mean-1133.7),(BW_16_1000mean-1133.7)]) #subtracting 510 from mean in order to move
+m1000mean_err = np.array([(abs(BW_4_1000mean-1133.7)),(abs(BW_8_1000mean-1133.7)),(abs(BW_16_1000mean-1133.7))]) #subtracting 510 from mean in order to move
                                                                               #data around 0, such that it will be mean
                                                                               #error
 fig4 = plt.figure(num=4,figsize=(10,7),dpi=200)
@@ -296,7 +296,7 @@ surf7.set_linestyle('-')
 surf7.set_linewidth(1)
 ax4.set_xlabel('Bandwidth (KHz)')
 ax4.set_ylabel('Spreading Factor')
-ax4.set_zlabel('Error (m) ')
+ax4.set_zlabel('Absolute Error (m) ')
 ax4.set_xticks([400,800,1600])
 ax4.view_init(azim=-135)
 plt.title('1133.7 m Mean Error')
@@ -304,7 +304,7 @@ plt.legend(handles=[green_patch, blue_patch])
 #plt.show()
 
 # fig 5 1500 m
-m1500mean_err = np.array([(BW_4_1500mean-1690),(BW_8_1500mean-1690),(BW_16_1500mean-1690)]) #subtracting 510 from mean in order to move
+m1500mean_err = np.array([(abs(BW_4_1500mean-1690)),(abs(BW_8_1500mean-1690)),(abs(BW_16_1500mean-1690))]) #subtracting 510 from mean in order to move
                                                                               #data around 0, such that it will be mean
                                                                               #error
 fig5 = plt.figure(num=5,figsize=(10,7),dpi=200)
@@ -327,7 +327,7 @@ surf9.set_linestyle('-')
 surf9.set_linewidth(1)
 ax5.set_xlabel('Bandwidth (KHz)')
 ax5.set_ylabel('Spreading Factor')
-ax5.set_zlabel('Error (m) ')
+ax5.set_zlabel('Absolute Error (m) ')
 ax5.set_xticks([400,800,1600])
 ax5.view_init(azim=-135)
 plt.title('1690 m Mean Error')
@@ -336,7 +336,7 @@ plt.legend(handles=[green_patch, blue_patch])
 
 # fig 6 2500 m
 
-m2500mean_err = np.array([(BW_4_2500mean-2607),(BW_8_2500mean-2607),(BW_16_2500mean-2607)]) #subtracting 510 from mean in order to move
+m2500mean_err = np.array([(abs(BW_4_2500mean-2607)),(abs(BW_8_2500mean-2607)),(abs(BW_16_2500mean-2607))]) #subtracting 510 from mean in order to move
                                                                               #data around 0, such that it will be mean
                                                                               #error
 fig6 = plt.figure(num=4,figsize=(10,7),dpi=200)
@@ -359,7 +359,7 @@ surf11.set_linestyle('-')
 surf11.set_linewidth(1)
 ax6.set_xlabel('Bandwidth (KHz)')
 ax6.set_ylabel('Spreading Factor')
-ax6.set_zlabel('Error (m) ')
+ax6.set_zlabel('Absolute Error (m) ')
 ax6.set_xticks([400,800,1600])
 ax6.view_init(azim=-135)
 plt.title('2607 m Mean Error')
@@ -418,14 +418,14 @@ plt.legend(handles=[green_patch, blue_patch])
 
 # all mean error i et plot
 
-'''
+
 fig1.savefig('25meanerr.pdf')
 fig2.savefig('100meanerr.pdf')
 fig3.savefig('500meanerr.pdf')
 fig4.savefig('1000meanerr.pdf')
 fig5.savefig('1500meanerr.pdf')
-fig6.savefig('2500meanerr.pdf')'''
-# Standard deviation plot
+fig6.savefig('2500meanerr.pdf')
+# Standard deviation plot and data 
 
 std25m = [BW_16_25std,BW_8_25std,BW_4_25std]
 std100m = [BW_16_100std,BW_8_100std,BW_4_100std]
@@ -433,53 +433,393 @@ std500m = [BW_16_500std,BW_8_500std,BW_4_500std]
 std1000m = [BW_16_1000std,BW_8_1000std,BW_4_1000std]
 std1500m = [BW_16_1500std,BW_8_1500std,BW_4_1500std]
 std2500m = [BW_16_2500std,BW_8_2500std,BW_4_2500std]
+
 SF_set = [5,6,7,8,9,10]
 
 fig8 =  plt.figure(num=8,figsize=(10,7),dpi=200)
 plt.plot(SF_set,BW_16_25std,'-ro',label='BW 1600')
 plt.plot(SF_set,BW_8_25std,'-go',label='BW 800')
-plt.plot(SF_set,BW_4_25std,'-bo',label='BW 400')
+#plt.plot(SF_set,BW_4_25std,'-bo',label='BW 400')
+plt.ylim([-0.5,2.5])
+plt.grid()
 plt.legend()
 plt.title('25 meter')
+#fig8.savefig('25stdcorrected.pdf')
 
 fig9 =  plt.figure(num=9,figsize=(10,7),dpi=200)
 plt.plot(SF_set,BW_16_100std,'-ro',label='BW 1600')
 plt.plot(SF_set,BW_8_100std,'-go',label='BW 800')
 plt.plot(SF_set,BW_4_100std,'-bo',label='BW 400')
+plt.ylim([0,2])
+plt.grid()
 plt.legend()
 plt.title('100 meter')
+#fig9.savefig('100stdcorrected.pdf')
 
 fig10 =  plt.figure(num=10,figsize=(10,7),dpi=200)
 plt.plot(SF_set,BW_16_500std,'-ro',label='BW 1600')
 plt.plot(SF_set,BW_8_500std,'-go',label='BW 800')
 plt.plot(SF_set,BW_4_500std,'-bo',label='BW 400')
+plt.ylim([0,5])
+plt.grid()
 plt.legend()
 plt.title('500 meter')
+#fig10.savefig('500stdcorrected.pdf')
 
 fig11 =  plt.figure(num=11,figsize=(10,7),dpi=200)
 plt.plot(SF_set,BW_16_1000std,'-ro',label='BW 1600')
 plt.plot(SF_set,BW_8_1000std,'-go',label='BW 800')
 plt.plot(SF_set,BW_4_1000std,'-bo',label='BW 400')
+plt.ylim([0,6])
+plt.grid()
 plt.legend()
 plt.title('1000 meter')
+#fig11.savefig('1000stdcorrected.pdf')
 
 fig12 =  plt.figure(num=12,figsize=(10,7),dpi=200)
 plt.plot(SF_set,BW_16_1500std,'-ro',label='BW 1600')
 plt.plot(SF_set,BW_8_1500std,'-go',label='BW 800')
 plt.plot(SF_set,BW_4_1500std,'-bo',label='BW 400')
+plt.ylim([0,20])
+plt.grid()
 plt.legend()
 plt.title('1500 meter')
+#fig12.savefig('1500stdcorrected.pdf')
 
 fig13 =  plt.figure(num=13,figsize=(10,7),dpi=200)
 plt.plot(SF_set,BW_16_2500std,'-ro',label='BW 1600')
 plt.plot(SF_set,BW_8_2500std,'-go',label='BW 800')
 plt.plot(SF_set,BW_4_2500std,'-bo',label='BW 400')
+plt.ylim([0,45])
+plt.xlim(8.8,10.3)
+plt.grid()
 plt.legend()
 plt.title('2500 meter')
+#fig13.savefig('2500stdcorrected.pdf')
 
-#fig8.show()
-#fig9.show()
-#fig10.show()
-#fig11.show()
-#fig12.show()
-#fig13.show()
+# need new array / list with vals because sem dont like none, so replacing nones with 'Nan'
+
+BW_16_500m2 = pd.DataFrame(np.transpose(np.array([[514.3,506.8,518.5,float('nan'),float('nan'),516.3,517.4,512.7,505.7,509.4],[512.2,512,521,510,511,506.7,511,515.9,511,513.2], # removed 55107 and 7115 from sf 5 since they are so far off (impossible)
+                                                 [511.5,515,512,512,512,512,511.9,514,511,512],[518,517,517.5,518,517,516,516,517,517,517],
+                                                 [521,521,521,521,522,521,523,522,521,523.5],[533,533,533,531,533,533,532,531,531,532]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+BW_4_500m2  = pd.DataFrame(np.transpose(np.array([[514,516.5,516.5,518,514,523,511.5,512.5,516.5,517.5],[519,518,519,521,519,520,519.8,520,518,519],
+                                                 [524,524.8,524,525,526,523,524.5,526,525,524.5],[533,534.5,533,534.5,535,535,533,534,535,534],
+                                                 [552,551,552,553,553,553,552,553.3,551,554],[589,590,594,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_16_1000m2 = pd.DataFrame(np.transpose(np.array([[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [1137,1143,1138,1138,1137,1136,1132,1141,1138,1136],[1140,1142,1141,1143,1141,1142,1141,1143,1141,1144],
+                                                  [1146,1145,1144,1145,1145,1146,1145,1145,1144,1145],[1156,1156,1155,1156,1156,1157,1157,1155,1156,1157]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_8_1000m2  = pd.DataFrame(np.transpose(np.array([[1130,1127,1887,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[1145,1140,1149,1144,1152,1153,1146,1138,1148,1149],
+                                                  [1142,1143,1141,1143,1141,1142,1144,1142,1144,1141],[1149,1148,1150,1149,1150,1149,1150,1148,1149,1147],
+                                                  [1156,1158,1145,1151,1152,1155,1155,1156,1150,1159],[1178,1178,1177,1176,1175,1177,1177,1175,1176,1176]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_16_1500m2 = pd.DataFrame(np.transpose(np.array([[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [1684,1685,1683,1683,1683,1712,1688,1693,1687,1689],[1670,1671,1670,1671,1668,1671,1671,1673,1670,1670]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_8_1500m2  = pd.DataFrame(np.transpose(np.array([[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [1690,1688,1688,1689,1695,1697,1693,1692,1691,1690],[1685,1683,1689,1687,1691,1688,1693,1696,1687,1688],
+                                                  [1668,1679,1664,1669,1667,1661,1642,1651,1675,1656],[1646,1648,1645,1648,1647,1645,1645,1648,1645,1646]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_4_1500m2  = pd.DataFrame(np.transpose(np.array([[1682,float('nan'),1679,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[1676,1684,1682,1682,1686,1689,1677,1720,1667,1645], #  removed 1 from sf 5 since clearly wrong
+                                                  [1685,1681,1680,1681,1679,1684,1672,1685,1677,1682],[1665,1669,1669,1664,1677,1672,1680,1678,1670,1679],
+                                                  [1645,1645,1643,1643,1644,1637,1643,1652,1649,1639],[1580,1583,1586,1596,1591,1587,1588,1584,1584,1585]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_16_2500m2 = pd.DataFrame(np.transpose(np.array([[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[2584,2581,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_8_2500m2  = pd.DataFrame(np.transpose(np.array([[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[2603,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [2545,2540,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[2558,2546,2547,2547,2563,2569,2576,2559,2551,2545]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+BW_4_2500m2  = pd.DataFrame(np.transpose(np.array([[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],
+                                                  [float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[2576,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')], #  removed 1 from sf 8 since clearly wrong
+                                                  [2574,2633,float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')],[2517,2511,2498,2517,2518,2523,2511,2521,2502,2507]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
+
+#confidence intervals at different ranges
+conf_16_25 = st.t.interval(0.95,len(BW_16_25m)-1,loc=BW_16_25mean,scale=st.sem(BW_16_25m))
+conf_8_25 = st.t.interval(0.95,len(BW_8_25m)-1,loc=BW_8_25mean,scale=st.sem(BW_8_25m))
+conf_4_25 = st.t.interval(0.95,len(BW_4_25m)-1,loc=BW_4_25mean,scale=st.sem(BW_4_25m))
+
+conf_16_100 = st.t.interval(0.95,len(BW_16_100m)-1,loc=BW_16_100mean,scale=st.sem(BW_16_100m))
+conf_8_100 = st.t.interval(0.95,len(BW_8_100m)-1,loc=BW_8_100mean,scale=st.sem(BW_8_100m))
+conf_4_100 = st.t.interval(0.95,len(BW_4_100m)-1,loc=BW_4_100mean,scale=st.sem(BW_4_100m))
+
+conf_16_500 = st.t.interval(0.95,len(BW_16_500m)-1,loc=BW_16_500mean,scale=st.sem(BW_16_500m2,nan_policy='omit'))
+conf_8_500 = st.t.interval(0.95,len(BW_8_500m)-1,loc=BW_8_500mean,scale=st.sem(BW_8_500m,nan_policy='omit'))
+conf_4_500 = st.t.interval(0.95,len(BW_4_500m)-1,loc=BW_4_500mean,scale=st.sem(BW_4_500m2,nan_policy='omit'))
+
+conf_16_1000 = st.t.interval(0.95,len(BW_16_1000m)-1,loc=BW_16_1000mean,scale=st.sem(BW_16_1000m2,nan_policy='omit'))
+conf_8_1000 = st.t.interval(0.95,len(BW_8_1000m)-1,loc=BW_8_1000mean,scale=st.sem(BW_8_1000m2,nan_policy='omit'))
+conf_4_1000 = st.t.interval(0.95,len(BW_4_1000m)-1,loc=BW_4_1000mean,scale=st.sem(BW_4_1000m,nan_policy='omit'))
+
+conf_16_1500 = st.t.interval(0.95,len(BW_16_1500m)-1,loc=BW_16_1500mean,scale=st.sem(BW_16_1500m2,nan_policy='omit'))
+conf_8_1500 = st.t.interval(0.95,len(BW_8_1500m)-1,loc=BW_8_1500mean,scale=st.sem(BW_8_1500m2,nan_policy='omit'))
+conf_4_1500 = st.t.interval(0.95,len(BW_4_1500m)-1,loc=BW_4_1500mean,scale=st.sem(BW_4_1500m2,nan_policy='omit'))
+
+conf_16_2500 = st.t.interval(0.95,len(BW_16_2500m)-1,loc=BW_16_2500mean,scale=st.sem(BW_16_2500m2,nan_policy='omit'))
+conf_8_2500 = st.t.interval(0.95,len(BW_8_2500m)-1,loc=BW_8_2500mean,scale=st.sem(BW_8_2500m2,nan_policy='omit'))
+conf_4_2500 = st.t.interval(0.95,len(BW_4_2500m)-1,loc=BW_4_2500mean,scale=st.sem(BW_4_2500m2,nan_policy='omit'))
+
+# plotting
+SF_set2 = [[5,6,7,8,9,10],[5,6,7,8,9,10]]
+
+fig14 = plt.figure(num=14)
+plt.plot(SF_set,[25,25,25,25,25,25],'--k',alpha=0.7,label='Ground Truth 25 m',linewidth=1)
+
+i = conf_16_25[0]
+j = conf_16_25[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_16_25mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='r',label='BW 1600',zorder=10,capsize=4,capthick=1)
+
+i = conf_8_25[0]
+j = conf_8_25[1]
+k = SF_set2[0]
+#print(i,j)
+for x,y,z,l in zip(i, j, k,BW_8_25mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='b',label='BW 800',zorder=5,capsize=4,capthick=1)
+
+i = conf_4_25[0]
+j = conf_4_25[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_4_25mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='g',label='BW 400',zorder=2,capsize=4,capthick=1)
+
+plt.ylabel('m')
+plt.xlabel('Spreading Factor')
+plt.ylim([18,40])
+plt.grid()
+plt.legend()
+plt.title('25 Meter confidence interval')
+fig14.tight_layout()
+fig14.savefig('25mConf.pdf')
+#fig14.show()
+
+fig15 = plt.figure(num=15)
+plt.plot(SF_set,[100,100,100,100,100,100],'--k',alpha=0.7,label='Ground Truth 100 m',linewidth=1)
+
+i = conf_16_100[0]
+j = conf_16_100[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_16_100mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='r',label='BW 1600',zorder=10,capsize=4,capthick=1)
+
+i = conf_8_100[0]
+j = conf_8_100[1]
+k = SF_set2[0]
+#print(i,j)
+for x,y,z,l in zip(i, j, k,BW_8_100mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='b',label='BW 800',zorder=5,capsize=4,capthick=1)
+
+i = conf_4_100[0]
+j = conf_4_100[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_4_100mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='g',label='BW 400',zorder=2,capsize=4,capthick=1)
+
+plt.ylabel('m')
+plt.xlabel('Spreading Factor')
+plt.ylim([90,125])
+plt.grid()
+plt.legend()
+plt.title('100 Meter confidence interval')
+fig15.tight_layout()
+fig15.savefig('100mConf.pdf')
+#fig15.show()
+
+
+fig16 = plt.figure(num=16)
+plt.plot(SF_set,[500,500,500,500,500,500],'--k',alpha=0.7,label='Ground Truth 500 m',linewidth=1)
+
+i = conf_16_500[0]
+j = conf_16_500[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_16_500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='r',label='BW 1600',zorder=10,capsize=4,capthick=1)
+
+i = conf_8_500[0]
+j = conf_8_500[1]
+k = SF_set2[0]
+#print(i,j)
+for x,y,z,l in zip(i, j, k,BW_8_500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='b',label='BW 800',zorder=5,capsize=4,capthick=1)
+
+i = conf_4_500[0]
+j = conf_4_500[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_4_500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='g',label='BW 400',zorder=2,capsize=4,capthick=1)
+
+plt.ylabel('m')
+plt.xlabel('Spreading Factor')
+plt.ylim([495,540])
+plt.grid()
+plt.legend()
+plt.title('500 Meter confidence interval')
+fig16.tight_layout()
+fig16.savefig('500mConf.pdf')
+#fig16.show()
+
+
+fig17 = plt.figure(num=17)
+plt.plot(SF_set,[1133.7,1133.7,1133.7,1133.7,1133.7,1133.7],'--k',alpha=0.7,label='Ground Truth 1133.7 m',linewidth=1)
+
+i = conf_16_1000[0]
+j = conf_16_1000[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_16_1000mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='r',label='BW 1600',zorder=10,capsize=4,capthick=1)
+
+i = conf_8_1000[0]
+j = conf_8_1000[1]
+k = SF_set2[0]
+#print(i,j)
+for x,y,z,l in zip(i, j, k,BW_8_1000mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='b',label='BW 800',zorder=5,capsize=4,capthick=1)
+
+i = conf_4_1000[0]
+j = conf_4_1000[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_4_1000mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='g',label='BW 400',zorder=2,capsize=4,capthick=1)
+
+plt.ylabel('m')
+plt.xlabel('Spreading Factor')
+plt.ylim([1125,1160])
+plt.grid()
+plt.legend()
+plt.title('1133.7 Meter confidence interval')
+fig17.tight_layout()
+fig17.savefig('1000mConf.pdf')
+#fig17.show()
+
+fig18 = plt.figure(num=18)
+plt.plot(SF_set,[1690,1690,1690,1690,1690,1690],'--k',alpha=0.7,label='Ground Truth 1690 m',linewidth=1)
+
+i = conf_16_1500[0]
+j = conf_16_1500[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_16_1500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='r',label='BW 1600',zorder=10,capsize=4,capthick=1)
+
+i = conf_8_1500[0]
+j = conf_8_1500[1]
+k = SF_set2[0]
+#print(i,j)
+for x,y,z,l in zip(i, j, k,BW_8_1500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='b',label='BW 800',zorder=5,capsize=4,capthick=1)
+
+i = conf_4_1500[0]
+j = conf_4_1500[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_4_1500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='g',label='BW 400',zorder=2,capsize=4,capthick=1)
+
+plt.ylabel('m')
+plt.xlabel('Spreading Factor')
+plt.ylim([1680,1700])
+plt.grid()
+plt.legend()
+plt.title('1690 Meter confidence interval')
+fig18.tight_layout()
+fig18.savefig('1500mConf.pdf')
+#fig18.show()
+
+
+fig19 = plt.figure(num=19)
+plt.plot(SF_set,[2607,2607,2607,2607,2607,2607],'--k',alpha=0.7,label='Ground Truth 2607 m',linewidth=1)
+
+i = conf_16_2500[0]
+j = conf_16_2500[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_16_2500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='r',label='BW 1600',zorder=10,capsize=4,capthick=1)
+
+i = conf_8_2500[0]
+j = conf_8_2500[1]
+k = SF_set2[0]
+#print(i,j)
+for x,y,z,l in zip(i, j, k,BW_8_2500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='b',label='BW 800',zorder=5,capsize=4,capthick=1)
+
+i = conf_4_2500[0]
+j = conf_4_2500[1]
+k = SF_set2[0]
+for x,y,z,l in zip(i, j, k,BW_4_2500mean):
+    plt.errorbar(z, l,xerr=0.1,yerr=abs(y-x),elinewidth=1.2,color='g',label='BW 400',zorder=2,capsize=4,capthick=1)
+
+plt.ylabel('m')
+plt.xlabel('Spreading Factor')
+plt.ylim([2520,2620])
+plt.grid()
+plt.legend()
+plt.title('2607 Meter confidence interval')
+fig19.tight_layout()
+fig19.savefig('2500mConf.pdf')
+#fig19.show()
+
+########################################################################################################################
+# SAVING ALL RELEVANT FILES
+# CONFIDENCE INTERVALS
+
+np.savetxt('conf_file16_25.txt',conf_16_25)
+np.savetxt('conf_file8_25.txt',conf_8_25)
+np.savetxt('conf_file4_25.txt',conf_4_25)
+
+np.savetxt('conf_file16_100.txt',conf_16_100)
+np.savetxt('conf_file8_100.txt',conf_8_100)
+np.savetxt('conf_file4_100.txt',conf_4_100)
+
+np.savetxt('conf_file16_500.txt',conf_16_500)
+np.savetxt('conf_file8_500.txt',conf_8_500)
+np.savetxt('conf_file4_500.txt',conf_4_500)
+
+np.savetxt('conf_file16_1000.txt',conf_16_1000)
+np.savetxt('conf_file8_1000.txt',conf_8_1000)
+np.savetxt('conf_file4_1000.txt',conf_4_1000)
+
+np.savetxt('conf_file16_1500.txt',conf_16_1500)
+np.savetxt('conf_file8_1500.txt',conf_8_1500)
+np.savetxt('conf_file4_1500.txt',conf_4_1500)
+
+np.savetxt('conf_file16_2500.txt',conf_16_2500)
+np.savetxt('conf_file8_2500.txt',conf_8_2500)
+np.savetxt('conf_file4_2500.txt',conf_4_2500)
+
+# MEANS
+
+np.savetxt('BW_16_25mean.txt',BW_16_25mean)
+np.savetxt('BW_16_100mean.txt',BW_16_100mean)
+np.savetxt('BW_16_500mean.txt',BW_16_500mean)
+np.savetxt('BW_16_1000mean.txt',BW_16_1000mean)
+np.savetxt('BW_16_1500mean.txt',BW_16_1500mean)
+np.savetxt('BW_16_2500mean.txt',BW_16_2500mean)
+
+np.savetxt('BW_8_25mean.txt',BW_8_25mean)
+np.savetxt('BW_8_100mean.txt',BW_8_100mean)
+np.savetxt('BW_8_500mean.txt',BW_8_500mean)
+np.savetxt('BW_8_1000mean.txt',BW_8_1000mean)
+np.savetxt('BW_8_1500mean.txt',BW_8_1500mean)
+np.savetxt('BW_8_2500mean.txt',BW_8_2500mean)
+
+np.savetxt('BW_4_25mean.txt',BW_4_25mean)
+np.savetxt('BW_4_100mean.txt',BW_4_100mean)
+np.savetxt('BW_4_500mean.txt',BW_4_500mean)
+np.savetxt('BW_4_1000mean.txt',BW_4_1000mean)
+np.savetxt('BW_4_1500mean.txt',BW_4_1500mean)
+np.savetxt('BW_4_2500mean.txt',BW_4_2500mean)
+
+# STANDARD DEVIATIONS.
+# FIRST BW 1.6 then 800 and then 400
+
+np.savetxt('std25m.txt',std25m)
+np.savetxt('std100m.txt',std100m)
+np.savetxt('std500m.txt',std500m)
+np.savetxt('std1000m.txt',std1000m)
+np.savetxt('std1500m.txt',std1500m)
+np.savetxt('std2500m.txt',std2500m)
+
+
