@@ -120,7 +120,6 @@ BW_4_2500m  = pd.DataFrame(np.transpose(np.array([[None,None,None,None,None,None
                                                   [2574,2633,None,None,None,None,None,None,None,None],[2517,2511,2498,2517,2518,2523,2511,2521,2502,2507]])),columns=['SF5','SF6','SF7','SF8','SF9','SF10'])
 #SF 8 was 1(2) out of 150
 #SF 9 was 2 / 150 SF 10 was at most 10% try succes 10/ 100
-
 # MEANS #########################################
 BW_16_25mean = df.mean(BW_16_25m)
 BW_16_100mean = df.mean(BW_16_100m)
