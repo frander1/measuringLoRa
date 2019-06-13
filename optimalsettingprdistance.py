@@ -4,11 +4,8 @@ from pandas import DataFrame as df
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import matplotlib.patches as mpatches
-import statsmodels.stats.api as sms
-import scipy
 import scipy.stats as st
 import matplotlib.pyplot as plt
-#import seaborn as sns
 
 #groundtruth was 25, 100, 1133 ,1690, 2607
 truth = [25, 100, 510.5, 1133.7 ,1690, 2607]
@@ -143,6 +140,7 @@ BW_4_1500mean = df.mean(BW_4_1500m)
 BW_4_2500mean = df.mean(BW_4_2500m)
 # Standard deviations ############################
 BW_16_25std = df.std(BW_16_25m)
+#print(BW_16_25std)
 BW_16_100std = df.std(BW_16_100m)
 BW_16_500std = df.std(BW_16_500m)
 BW_16_1000std = df.std(BW_16_1000m)
@@ -333,6 +331,7 @@ plt.title('1690 m Mean Error')
 plt.legend(handles=[green_patch, blue_patch])
 #plt.show()
 
+
 # fig 6 2500 m
 
 m2500mean_err = np.array([(abs(BW_4_2500mean-2607)),(abs(BW_8_2500mean-2607)),(abs(BW_16_2500mean-2607))]) #subtracting 510 from mean in order to move
@@ -432,7 +431,11 @@ std500m = [BW_16_500std,BW_8_500std,BW_4_500std]
 std1000m = [BW_16_1000std,BW_8_1000std,BW_4_1000std]
 std1500m = [BW_16_1500std,BW_8_1500std,BW_4_1500std]
 std2500m = [BW_16_2500std,BW_8_2500std,BW_4_2500std]
+#print(std500m)
 
+print(BW_16_25std)
+print()
+print(BW_8_25std)
 SF_set = [5,6,7,8,9,10]
 
 fig8 =  plt.figure(num=8,figsize=(10,7),dpi=200)
