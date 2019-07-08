@@ -4,7 +4,7 @@ from pandas import DataFrame as df
 import statsmodels
 import scipy
 import matplotlib.pyplot as plt
-import seaborn as sns
+
 
 #distance was 100 meters
 Distance = 100
@@ -33,7 +33,7 @@ BW_16_SF_5_std.columns = ['packets','std']
 BW_400_SF_10 = pd.DataFrame(np.transpose(np.array([[185,182.5,184.5,181.5,183,186,184,184,186,183],[0,0,0,186,186,0,0,184.5,184.5,0],[184,0,0,0,0,0,0,0,0,0]])),columns=['20','40','60'])
 BW_400_SF_10_means = df.mean(BW_400_SF_10)
 BW_400_SF_10_means.columns=['packets','meters']
-BW_400_SF_10_std = df.mean(BW_400_SF_10)
+BW_400_SF_10_std = df.std(BW_400_SF_10)
 BW_400_SF_10_std.columns = ['packets','std']
 #######################################################
 BW_400_SF_5 = pd.DataFrame(np.transpose(np.array([[103.5,102,102.5,101.7,103.4,1,102.5,101.6,105.5,101.9],[105,105,105,107,104,106,107,103,104,106.5],[104,106,105,103.5,105,102,104,103,104,104],
@@ -52,31 +52,42 @@ BW_16_SF_6_means.columns = ['packets','meters']
 BW_16_SF_6_std = df.std(BW_16_SF_6)
 BW_16_SF_6_std.columns = ['packets','std']
 
-
+print(BW_16_SF_5_means)
+print(BW_16_SF_10_std)
+print(BW_16_SF_6_std)
+print(BW_400_SF_5_std)
+print(BW_400_SF_10_std)
 #######################################################
 # MEAN
-plt.figure(num=1,figsize=(10,7),dpi=150)
-BW_16_SF_10_means_plot = plt.plot(BW_16_SF_10_means,'-ro',label='BW: 1.6 MHz, SF: 10')
-BW_16_SF_5_means_plot = plt.plot(BW_16_SF_5_means,'-bo',label='BW: 1.6 MHz, SF: 5')
-#BW_400_SF_10_means_plot = plt.plot(BW_400_SF_10_means,'-yo',label='BW: 400 Khz, SF: 10')
-BW_400_SF_5_means_plot = plt.plot(BW_400_SF_5_means,'-go',label='BW: 400 Khz, SF: 5')
-BW_16_SF_6_means_plot = plt.plot(BW_16_SF_6_means,'-mo',label='BW: 1.6 MHz, SF: 6')
-groundtruth=plt.plot([100,100,100,100,100,100,100],'--ko',label='Ground Trouth')
-plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-plt.xlabel('Number of Packets')
+skod = plt.figure(num=1,dpi=200)
+means_plot = plt.plot(listline,BW_16_SF_10_means,'-ro',label='BW: 1.6 MHz, SF: 10')
+means_plot = plt.plot(listline,BW_16_SF_5_means,'-bo',label='BW: 1.6 MHz, SF: 5')
+#means_plot = plt.plot([20,40,60],BW_400_SF_10_means,'-yo',label='BW: 400 Khz, SF: 10')
+means_plot = plt.plot(listline,BW_400_SF_5_means,'-go',label='BW: 400 Khz, SF: 5')
+means_plot = plt.plot([60,80,100,125],BW_16_SF_6_means,'-mo',label='BW: 1.6 MHz, SF: 6')
+means_plot =plt.plot(listline,[100,100,100,100,100,100,100],'--ko',label='100m Ground Trouth')
+plt.legend()
+plt.title('Mean of measurements at different settings')
+plt.xlabel('Number of requests per exchange')
 plt.ylabel('Meters')
 plt.show()
+skod.savefig('correctedmean.pdf')
 
 #######################################################
 # STANDARD DEVIATION
-plt.figure(num=2,figsize=(10,7),dpi=150)
-BW_16_SF_10_std_plot = plt.plot(BW_16_SF_10_std, '-ro',label='BW: 1.6 MHz, SF: 10')
-BW_16_SF_5_std_plot = plt.plot(BW_16_SF_5_std,'-bo',label='BW: 1.6 MHz, SF: 5')
-#BW_400_SF_10_std_plot = plt.plot(BW_400_SF_10_std,'-yo',label='BW: 400 Khz, SF: 10')
-#BW_400_SF_5_std_plot = plt.plot(BW_400_SF_5_std,'-go',label='BW: 400 Khz, SF: 5')
-BW_16_SF_6_std_plot = plt.plot(BW_16_SF_6_std,'-mo',label='BW: 1.6 MHz, SF: 6')
-plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+skod2 = plt.figure(num=2,figsize=(10,7),dpi=150)
+BW_16_SF_10_std_plot = plt.plot(listline,BW_16_SF_10_std, '-ro',label='BW: 1.6 MHz, SF: 10')
+BW_16_SF_5_std_plot = plt.plot(listline,BW_16_SF_5_std,'-bo',label='BW: 1.6 MHz, SF: 5')
+#BW_400_SF_10_std_plot = plt.plot([20,40,60],BW_400_SF_10_std,'-yo',label='BW: 400 Khz, SF: 10')
+#BW_400_SF_5_std_plot = plt.plot(listline,BW_400_SF_5_std,'-go',label='BW: 400 Khz, SF: 5')
+BW_16_SF_6_std_plot = plt.plot([60,80,100,125],BW_16_SF_6_std,'-mo',label='BW: 1.6 MHz, SF: 6')
+plt.legend()
+plt.title('Standard deviation of measurements at different settings')
+plt.xlabel('Number of requests per exchange')
+plt.ylabel('Meters')
 plt.show()
+skod2.savefig('correctedstd.pdf')
+
 
 
 # Hvilke BW og SF er bedst til hvilke distancer?

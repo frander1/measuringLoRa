@@ -1,11 +1,8 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame as df
-import statsmodels
-import scipy
 from scipy.stats import sem, t
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 # 25 measurements per distance BW 1.6 MHz and SF 6 as found yesterday to be best 100 packets mange pakker bliver tabt / noter hvor mange måske 10/100 ca.
 # 10 m
@@ -30,6 +27,10 @@ BW_16_SF_6_mean.columns=['Meters','Measurements']
 BW_16_SF_6_mean_list = list(BW_16_SF_6_mean)
 BW_16_SF_6_std = df.std(BW_16_SF_6_Measurements)
 BW_16_SF_6_std.columns=['Meters','std']
+print(BW_16_SF_6_mean)
+#print(BW_16_SF_6_std )
+print((BW_16_SF_6_std ))
+print(df.mean(BW_16_SF_6_std))
 
 #######################################################
 All_Measurements = pd.DataFrame(np.transpose(np.array([
@@ -43,7 +44,7 @@ All_Measurements = pd.DataFrame(np.transpose(np.array([
                  [248,249,249,247.7,247.7,249,248.7,249,248.5,249,250,248,250,251,250,248.5,249,250,246,246,248,247,248,247,243.5],
                  [296,296,291.4,302.5,302.5,302.5,301,299,296.2,290.8,303,301.9,294,295,303,299,299.5,301,301,304,298,305.1,300,300.5,300],
                  [400,405.4,403.8,398.7,402.6,399.7,408.8,402.1,403.2,415.7,400,401.6,400,400,399,399.5,399,398.4,397,395.5,399,397,400.5,400,395.9],
-                 [525.5, 524.9, 5515, 524, 522, 525.5, 523, 523, 525, 522, 526, 536, 524, 523, 41342, 523.5, 525, 526, 524, 535, 523, 522, 525, 526, 524],
+                 [525.5, 524.9, 5515, 524, 522, 525.5, 523, 523, 525, 522, 526, 536, 524, 523, 41342, 523.5, 525, 526, 524, 535, 523, 522, 525, 526, 524],# remove 41342 from 500 m
                  [664,664,665,664,664,708,665,665,664,664,665,665,665,664,664,664,665,665,664,664,665,663,664,664,664],
                  [892.5,1129,892,891,892,889,890,889,888,890,892,889,891,891,891,892,890.5,892,0,893,893,893,890,889,889],
                  [1181,1181,1182,1181,1183,1182,1180,1182,1180,1180,1180,1181,1181,1182,1183,1182,1183,1183,1184,1184,1184,1183,1183,1184,1183]])),
@@ -74,10 +75,25 @@ for i in range(0,14):
 
 #######################################################
 # PLOTS
-plt.figure(num=1,figsize=(10,7),dpi=150)
+skod = plt.figure(num=1,dpi=200)
 BW_16_SF_6_mean_plot = plt.plot(groundtruth[0:10],BW_16_SF_6_mean,'-ro',label = 'BW 1.6 Mhz SF 6')
-ground_truth_plot = plt.plot(groundtruth[0:10],groundtruth[0:10], '-bo',label = 'ground truth')
-plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+ground_truth_plot = plt.plot(groundtruth[0:10],groundtruth[0:10], '--k',label = 'ground truth')
+plt.title('Mean of measurements at different distances')
+plt.xlabel('Meters')
+plt.ylabel('Meters')
+plt.legend()
+plt.grid()
+skod.savefig('400measurement.pdf')
+plt.show()
+
+skod2 = plt.figure(num=4,dpi=200)
+plt.plot(groundtruth[0:10],BW_16_SF_6_std ,'-ro',label = 'BW 1.6 Mhz SF 6')
+plt.title('Standard devation of measurements at different distances')
+plt.xlabel('Meters')
+plt.ylabel('Standard deviation')
+plt.legend()
+plt.grid()
+skod2.savefig('400std.pdf')
 plt.show()
 
 plt.figure(num=2,figsize=(10,7),dpi=150)
